@@ -17,8 +17,8 @@ app.get('/location', (request, respond) => {
 
     respond.json({
         formattedQuery: cityData.formatted_address,
-        latitude: cityData.geometry.location.lat,
-        longitude: cityData.geometry.location.lng
+        latitude: lat,
+        longitude: lng
     });
 });
 
