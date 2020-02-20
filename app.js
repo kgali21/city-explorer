@@ -43,7 +43,6 @@ const getWeatherData = async(latitude, longitude) => {
 app.get('/weather', async(req, res, next) => {
     try {
         const locationWeather = await getWeatherData(latitude, longitude);
-
         res.json({ locationWeather });
     } catch (err) {
         next(err);
@@ -72,7 +71,6 @@ const getTrailsData = async(latitude, longitude) => {
 app.get('/trails', async(req, res, next) => {
     try {
         const locationTrails = await getTrailsData(latitude, longitude);
-
         res.json({ locationTrails });
     } catch (err) {
         next(err);
@@ -99,11 +97,36 @@ const getYelpData = async(latitude, longitude) => {
 app.get('/reviews', async(req, res, next) => {
     try {
         const locationBusinesses = await getYelpData(latitude, longitude);
-        console.log(locationBusinesses);
         res.json({ locationBusinesses });
     } catch (err) {
         next(err);
     }
 });
+
+const getEventsData = async(latitude, longitude) => {
+    const URL = `http://api.eventful.com/json/events/search?app_key=${process.env.EVENTFUL_API_KEY}&where=${latitude},${longitude}&within=25&page_size=20&page_number=1`;
+    const data = await request.get(URL);
+    const events = JSON.parse(data.text);
+
+
+    return events.events.event.map(event => {
+        return {
+            link: event.url,
+            name: event.title,
+            event_date: event.start_time,
+            summary: event.description === null ? 'N/A' : event.description
+        };
+    });
+};
+
+app.get('/events', async(req, res, next) => {
+    try {
+        const locationEvents = await getEventsData(latitude, longitude);
+        res.json({ locationEvents });
+    } catch (err) {
+        next(err);
+    }
+});
+
 
 module.exports = { app };
