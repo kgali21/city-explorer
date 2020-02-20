@@ -53,7 +53,7 @@ app.get('/weather', async(req, res, next) => {
 const getTrailsData = async(latitude, longitude) => {
     const URL = `https://www.hikingproject.com/data/get-trails?lat=${latitude}&lon=${longitude}&maxResults=10&key=${process.env.TRAILS_API_KEY}`;
     const data = await request.get(URL);
-    console.log(data);
+    
     return data.body.trails.map(trail => {
         return {
             name: trail.name,
@@ -74,6 +74,33 @@ app.get('/trails', async(req, res, next) => {
         const locationTrails = await getTrailsData(latitude, longitude);
 
         res.json({ locationTrails });
+    } catch (err) {
+        next(err);
+    }
+});
+
+const getYelpData = async(latitude, longitude) => {
+    const URL = `https://api.yelp.com/v3/businesses/search?latitude=${latitude}&longitude=${longitude}`;
+    const data = await request
+        .get(URL)
+        .set('Authorization', `Bearer ${process.env.YELP_API_KEY}`);
+
+    return data.body.businesses.map(business => {
+        return {
+            name: business.name,
+            image_url: business.image_url,
+            price: business.price,
+            rating: business.rating,
+            url: business.url,
+        };
+    });
+};
+
+app.get('/reviews', async(req, res, next) => {
+    try {
+        const locationBusinesses = await getYelpData(latitude, longitude);
+        console.log(locationBusinesses);
+        res.json({ locationBusinesses });
     } catch (err) {
         next(err);
     }
