@@ -7,7 +7,7 @@ describe('/GET /location', () => {
             
             const response = await request(app)
                 
-                .get('/location?search=portland');
+                .get('/location');
             
             expect(response.body).toEqual({
                 formattedQuery: expect.any(String), 
