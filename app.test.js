@@ -10,9 +10,9 @@ describe('/GET /location', () => {
                 .get('/location?search=portland');
             
             expect(response.body).toEqual({
-                formattedQuery: 'Portland, Multnomah County, Oregon, USA', 
-                latitude: '45.5202471', 
-                longitude: '-122.6741949'
+                formattedQuery: expect.any(String), 
+                latitude: expect.any(String), 
+                longitude: expect.any(String)
             });
             
             expect(response.statusCode).toBe(200);
